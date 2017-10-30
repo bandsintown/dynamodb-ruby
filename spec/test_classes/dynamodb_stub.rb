@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "dynamodb/base"
+
 class DynamodbStub < Dynamodb::Base
   key :hash_key,   :number, key: :hash
   key :range_key,  :string, key: :range
@@ -18,4 +20,6 @@ class DynamodbStub < Dynamodb::Base
                   range: { name: :global_range_key, type: :string }
                 },
                 projection: :all
+
+  time_to_live { @data["expires_at"] = (DateTime.now >> 3).to_time.to_i }
 end

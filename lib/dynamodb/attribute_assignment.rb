@@ -55,8 +55,10 @@ module Dynamodb
       attr_reader :hash_key, :range_key, :attribute_definitions,
                   :key_schema, :indexes, :local_indexes, :global_indexes
 
-      def table_name
-        @_table_name # TODO: ||= name.tableize
+      def table_name(_table_name = nil)
+        return (@_table_name || name.tableize) if _table_name.nil?
+
+        @_table_name = _table_name.to_s
       end
 
       def local_indexes
@@ -65,10 +67,6 @@ module Dynamodb
 
       def global_indexes
         indexes_for(:global)
-      end
-
-      def table(_table_name)
-        @_table_name = _table_name.to_s
       end
 
       def key(attr_name, attr_type, options)

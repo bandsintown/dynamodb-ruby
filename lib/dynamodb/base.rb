@@ -3,6 +3,9 @@
 require "dynamodb/connection"
 require "dynamodb/attribute_assignment"
 require "dynamodb/querying"
+require "active_support/core_ext/hash/keys"
+require "active_support/core_ext/hash/indifferent_access"
+require "active_support/core_ext/string/inflections"
 
 ##
 # Represents a data hash object that is can be stored in a DynamoDB
