@@ -46,18 +46,10 @@ module Dynamodb
     end
 
     def delete_table(_table_name)
-      # To prevent accidentally deleting tables in production
-      (raise "Can't delete tables in production") unless self.name == "Dynamodb" &&
-        self.config == { endpoint: "http://localhost:10070" }
-
       client.delete_table(table_name: _table_name)
     end
 
     def create_table(_table_name, options)
-      # To prevent accidentally creating tables in production
-      (raise "Can't create tables in production") unless self.name == "Dynamodb" &&
-        self.config == { endpoint: "http://localhost:10070" }
-
       resource.create_table(
         {
           table_name: _table_name,

@@ -26,7 +26,7 @@ module Dynamodb
     end
 
     def config
-      @@config ||= { endpoint: "http://localhost:10070" }
+      @@config ||= { }
     end
 
     def config=(client_config)

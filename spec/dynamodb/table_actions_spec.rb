@@ -88,18 +88,7 @@ RSpec.describe Dynamodb::TableActions do
   end
 
   describe ".delete_table(_table_name)" do
-    it "should not call delete_table on client in production" do
-      expect(dynamo_stub.client).not_to receive(:delete_table)
-
-      expect { dynamo_stub.delete_table("table_name") }.to(
-        raise_error("Can't delete tables in production")
-      )
-    end
-
     it "should call delete_table on client with table_name" do
-      allow(Dynamodb::TableActions.class).to receive(:name) { 'Dynamodb' }
-      DynamodbStub.config = { endpoint: "http://localhost:10070" }
-
       expect(dynamo_stub.client).to(
         receive(:delete_table).with(table_name: "table_name")
       )
@@ -109,17 +98,7 @@ RSpec.describe Dynamodb::TableActions do
   end
 
   describe ".create_table(_table_name, options)" do
-    it "should not call create_table on client in production" do
-      expect(dynamo_stub.resource).not_to receive(:create_table)
-
-      expect { dynamo_stub.create_table("table_name", {}) }.to(
-        raise_error("Can't create tables in production")
-      )
-    end
-
     it "should call create_table on client with table_name" do
-      allow(Dynamodb::TableActions.class).to receive(:name) { "Dynamodb" }
-
       expect(dynamo_stub.resource).to(
         receive(:create_table).with({
           table_name: "table_name",
