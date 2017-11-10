@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require "dynamodb/cli"
+Dynamodb::CLI.start
