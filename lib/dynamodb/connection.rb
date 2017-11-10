@@ -5,7 +5,7 @@ require "aws-sdk-dynamodb"
 module Dynamodb
   module Connection
     def client
-      @@client ||= Aws::DynamoDB::Client.new(config)
+      @@client ||= Aws::DynamoDB::Client.new(Dynamodb.configuration.client_config)
     end
 
     def client=(new_connection)
@@ -23,14 +23,6 @@ module Dynamodb
 
     def resource=(new_resource)
       @@resource = new_resource
-    end
-
-    def config
-      @@config ||= { }
-    end
-
-    def config=(client_config)
-      @@config = client_config
     end
   end
 end

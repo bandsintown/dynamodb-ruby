@@ -6,12 +6,7 @@ require "test_classes/dynamodb_stub"
 RSpec.describe Dynamodb::Querying do
   let(:dynamo_stub) { DynamodbStub }
   let(:dynamo_instance) { dynamo_stub.new(data) }
-  let(:client) do
-    Aws::DynamoDB::Client.new({
-      endpoint: "http://localhost:8000",
-      stub_responses: true
-    })
-  end
+  let(:client) { Aws::DynamoDB::Client.new(stub_responses: true) }
   let(:data) do
     {
       hash_key: 123,

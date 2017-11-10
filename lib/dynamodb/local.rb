@@ -10,15 +10,8 @@ module Dynamodb
     class << self
       attr_reader :dynamodb
 
-      def init_dynamodb
-        @dynamodb ||= Dynamodb
-        # Note: Set database to point to dynamodb local
-        @dynamodb.config = { endpoint: "http://localhost:10070" }
-        @dynamodb.reset_client # reset the connection
-      end
-
       def reset
-        init_dynamodb
+        @dynamodb ||= Dynamodb
 
         teardown
         build_tables # DynamoDBSchema#build_tables

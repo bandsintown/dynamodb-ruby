@@ -9,11 +9,7 @@ RSpec.describe Dynamodb::TableActions do
   let(:table_name) { "table_name" }
   let(:key) { "key" }
   let(:options) { { foo: :bar } }
-  let(:item) do
-    {
-      item: :some_item
-    }
-  end
+  let(:item) { { item: :some_item } }
 
   describe ".get_item(_table_name, _key, options = {})" do
     it "calls get_item on client and returns the item" do
@@ -99,8 +95,8 @@ RSpec.describe Dynamodb::TableActions do
 
   describe ".create_table(_table_name, options)" do
     it "should call create_table on client with table_name" do
-      expect(dynamo_stub.resource).to(
-        receive(:create_table).with({
+      expect(dynamo_stub.resource).to receive(:create_table)
+        .with({
           table_name: "table_name",
           provisioned_throughput: {
             read_capacity_units: 5,
@@ -108,7 +104,6 @@ RSpec.describe Dynamodb::TableActions do
           },
           foo: :bar
         })
-      )
 
       dynamo_stub.create_table("table_name", { foo: :bar })
     end

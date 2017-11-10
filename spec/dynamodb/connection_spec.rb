@@ -11,22 +11,12 @@ RSpec.describe Dynamodb::Connection do
   end
 
   describe "class instance variables" do
-    before do
-      # NOTE: Dynamodb::Local.reset is going to try and set it to localhost.
-      #  set it to {} before this test for consistency
-      dynamo_stub.config=({})
-    end
-
     it "sets @@client to nil" do
       expect(Dynamodb::Connection.class_variable_get(:@@client)).to eq(nil)
     end
 
     it "sets @@resource to nil" do
       expect(Dynamodb::Connection.class_variable_get(:@@resource)).to eq(nil)
-    end
-
-    it "sets @@config to {}" do
-      expect(Dynamodb::Connection.class_variable_get(:@@config)).to eq({})
     end
   end
 
@@ -68,22 +58,6 @@ RSpec.describe Dynamodb::Connection do
       dynamo_stub.resource = "abc"
 
       expect(Dynamodb::Connection.class_variable_get(:@@resource)).to eq("abc")
-    end
-  end
-
-  describe ".config" do
-    it "returns the global config var" do
-      expect(dynamo_stub.config).to(
-        eq(Dynamodb::Connection.class_variable_get(:@@config))
-      )
-    end
-  end
-
-  describe ".config=(client_config)" do
-    it "sets the class variable for @@config" do
-      dynamo_stub.config = { foo: :bar }
-
-      expect(Dynamodb::Connection.class_variable_get(:@@config)).to eq({ foo: :bar })
     end
   end
 end
