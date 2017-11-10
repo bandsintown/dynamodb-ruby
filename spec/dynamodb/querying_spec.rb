@@ -33,7 +33,7 @@ RSpec.describe Dynamodb::Querying do
 
   # NOTE: Need to reset the Dynamodb::Connection for testing
   before(:each) do
-    dynamo_stub.client = client
+    dynamo_stub.client(client)
   end
 
   describe ".update(attributes = {})" do

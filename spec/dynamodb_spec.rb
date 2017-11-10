@@ -7,17 +7,17 @@ RSpec.describe Dynamodb do
     expect(Dynamodb::VERSION).to eq "0.3.0"
   end
 
-  describe "#configure" do
+  describe ".configure" do
     before do
       Dynamodb.configure do |config|
-        config.client_config = { endpoint: 'www.dynamodb.com' }
+        config.client_config = { stub_responses: true }
       end
     end
 
     it "returns the correct client settings" do
       dynamodb = Dynamodb.configuration.client_config
 
-      expect(dynamodb).to eq({ endpoint: 'www.dynamodb.com' })
+      expect(dynamodb).to eq({ stub_responses: true })
     end
   end
 end

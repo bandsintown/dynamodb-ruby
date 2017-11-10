@@ -84,16 +84,34 @@ RSpec.describe Dynamodb::TableActions do
   end
 
   describe ".delete_table(_table_name)" do
+    before do
+      Dynamodb.configure { |config| config.can_delete_tables = true }
+    end
+
     it "should call delete_table on client with table_name" do
-      expect(dynamo_stub.client).to(
-        receive(:delete_table).with(table_name: "table_name")
-      )
+      expect(dynamo_stub.client).to receive(:delete_table)
+        .with(table_name: "table_name")
 
       dynamo_stub.delete_table("table_name")
+    end
+
+    context "when config can delete tables is false" do
+      before do
+        Dynamodb.configure { |config| config.can_delete_tables = false }
+      end
+
+      it "should not call delete_table and raise an exception" do
+        expect { dynamo_stub.delete_table("table_name") }
+          .to raise_error("Can not delete tables")
+      end
     end
   end
 
   describe ".create_table(_table_name, options)" do
+    before do
+      Dynamodb.configure { |config| config.can_create_tables = true }
+    end
+
     it "should call create_table on client with table_name" do
       expect(dynamo_stub.resource).to receive(:create_table)
         .with({
@@ -106,6 +124,17 @@ RSpec.describe Dynamodb::TableActions do
         })
 
       dynamo_stub.create_table("table_name", { foo: :bar })
+    end
+
+    context "when config can create tables is false" do
+      before do
+        Dynamodb.configure { |config| config.can_create_tables = false }
+      end
+
+      it "should not call create_table and raise an exception" do
+        expect { dynamo_stub.create_table("table_name", {}) }
+          .to raise_error("Can not create tables")
+      end
     end
   end
 end

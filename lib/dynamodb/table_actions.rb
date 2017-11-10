@@ -46,10 +46,16 @@ module Dynamodb
     end
 
     def delete_table(_table_name)
+      # To prevent accidentally deleting tables in production
+      raise 'Can not delete tables' unless Dynamodb.configuration.can_delete_tables
+
       client.delete_table(table_name: _table_name)
     end
 
     def create_table(_table_name, options)
+      # To prevent accidentally deleting tables in production
+      raise 'Can not create tables' unless Dynamodb.configuration.can_create_tables
+
       resource.create_table(
         {
           table_name: _table_name,

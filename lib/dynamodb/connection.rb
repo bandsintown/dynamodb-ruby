@@ -4,25 +4,21 @@ require "aws-sdk-dynamodb"
 
 module Dynamodb
   module Connection
-    def client
+    def client(new_connection = nil)
+      return (@@client = new_connection) unless new_connection.nil?
+
       @@client ||= Aws::DynamoDB::Client.new(Dynamodb.configuration.client_config)
     end
 
-    def client=(new_connection)
-      @@client = new_connection
+    def resource(new_resource = nil)
+      return (@@resource = new_resource) unless new_resource.nil?
+
+      @@resource ||= Aws::DynamoDB::Resource.new(client: client)
     end
 
     def reset_client
       @@client   = nil
       @@resource = nil
-    end
-
-    def resource
-      @@resource ||= Aws::DynamoDB::Resource.new(client: client)
-    end
-
-    def resource=(new_resource)
-      @@resource = new_resource
     end
   end
 end
