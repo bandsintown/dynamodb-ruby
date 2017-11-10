@@ -2,16 +2,16 @@ require "thor"
 
 module Dynamodb
   class CLI < Thor
-    DIST_DIR = "vendor/DynamoDBLocal-latest"
+    DIST_DIR = "./vendor/DynamoDBLocal-latest"
     PIDFILE = "dynamodb.pid"
     PORT = 8000
     LOG_DIR = "logs"
 
     desc "start", "Starts Dynamodb Local"
-    method_option :dist_dir, aliases: "-dd"
-    method_option :pidfile,  aliases: "-pf"
-    method_option :port,     aliases: "-p"
-    method_option :log_dir,  aliases: "-ld"
+    method_option :dist_dir, aliases: "-dd", default: DIST_DIR
+    method_option :pidfile,  aliases: "-pf", default: PIDFILE
+    method_option :port,     aliases: "-p", default: PORT
+    method_option :log_dir,  aliases: "-ld", default: LOG_DIR
     def start
       %x(
         if [ -z $JAVA_HOME ]; then
@@ -27,24 +27,22 @@ module Dynamodb
       )
 
       dist_dir = options[:dist_dir] || DIST_DIR
-      `cd #{dist_dir}`
+      `cd #{options[:dist_dir]}`
 
       %x(
         if [ ! -f DynamoDBLocal.jar ] || [ ! -d DynamoDBLocal_lib ]; then
-          echo >&2 "ERROR: Could not find DynamoDBLocal files in #{dist_dir}."
+          echo >&2 "ERROR: Could not find DynamoDBLocal files in #{options[:dist_dir]}."
           exit 1
         fi
       )
 
-      log_dir = options[:log_dir] || LOG_DIR
-      `mkdir -p  #{log_dir}`
+      `mkdir -p  #{options[:log_dir]}`
 
-      puts "DynamoDB Local output will save to #{dist_dir}/#{log_dir}/"
+      puts "DynamoDB Local output will save to #{options[:dist_dir]}/#{options[:log_dir]}/"
 
-      port = options[:port] || PORT
-      `hash lsof 2>/dev/null && lsof -i :#{port} && { echo >&2 "Something is already listening on port #{port}; I will not attempt to start DynamoDBLocal."; exit 1; }`
+      `hash lsof 2>/dev/null && lsof -i :#{options[:port]} && { echo >&2 "Something is already listening on port #{options[:port]}; I will not attempt to start DynamoDBLocal."; exit 1; }`
 
-      `nohup $JAVA_HOME/bin/java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -delayTransientStatuses -port #{port} -inMemory 1>"#{log_dir}/output.log" 2>"#{log_dir}/error.log" &`
+      `nohup $JAVA_HOME/bin/java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -delayTransientStatuses -port #{options[:port]} -inMemory 1>"#{options[:log_dir]}/output.log" 2>"#{options[:log_dir]}/error.log" &`
       `PID=$!`
 
       puts "Verifying that DynamoDBLocal actually started..."
@@ -64,31 +62,28 @@ module Dynamodb
         done
       )
 
-      puts "DynamoDB Local started with pid #{`$PID`} listening on port #{port}."
+      puts "DynamoDB Local started with pid #{`$PID`} listening on port #{options[:port]}."
 
-      pidfile = options[:pidfile] || PIDFILE
-      puts `$PID > #{pidfile}`
+      puts `$PID > #{options[:pidfile]}`
     end
 
     desc "stop", "Stops Dynamodb Local"
-    method_option :dist_dir, aliases: "-dd"
-    method_option :pidfile,  aliases: "-pf"
-    method_option :port,     aliases: "-p"
-    method_option :log_dir,  aliases: "-ld"
+    method_option :dist_dir, aliases: "-dd", default: DIST_DIR
+    method_option :pidfile,  aliases: "-pf", default: PIDFILE
+    method_option :port,     aliases: "-p", default: PORT
+    method_option :log_dir,  aliases: "-ld", default: LOG_DIR
     def stop
-      dist_dir = options[:dist_dir] || DIST_DIR
-      `cd #{dist_dir}`
+      `cd #{options[:dist_dir]}`
 
-      pidfile = options[:pidfile] || PIDFILE
       %x(
-        if [ ! -f #{pidfile} ]; then
+        if [ ! -f #{options[:pidfile]} ]; then
           echo 'ERROR: There is no pidfile, below is the list of DynamoDBLocal processes you may need to kill.'
           ps -e | grep DynamoDBLocal | grep -v grep
           exit 1
         fi
       )
 
-      `pid=$(<#{pidfile})`
+      `pid=$(<#{options[:pidfile]})`
 
       `echo "Killing DynamoDBLocal at pid $pid..."`
       `kill $pid`
@@ -99,7 +94,7 @@ module Dynamodb
           kill -0 $pid 2>/dev/null
           if [ $? -ne 0 ]; then
             echo 'Successfully shut down DynamoDBLocal.'
-            rm -f #{pidfile}
+            rm -f #{options[:pidfile]}
             exit 0
           else
             echo 'Still waiting for DynamoDBLocal to shut down...'
@@ -113,7 +108,7 @@ module Dynamodb
 
       `ps -e | grep DynamoDBLocal | grep -v grep`
 
-      `rm -f #{pidfile}`
+      `rm -f #{options[:pidfile]}`
 
       `exit 1`
     end
