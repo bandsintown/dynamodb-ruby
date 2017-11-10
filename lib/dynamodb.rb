@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "dynamodb/version"
 require "dynamodb/configuration"
 require "dynamodb/connection"
 require "dynamodb/table_actions"
+require "dynamodb/version"
 
 module Dynamodb
   extend Connection
