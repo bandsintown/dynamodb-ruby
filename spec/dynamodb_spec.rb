@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe Dynamodb do
   it "has a version number" do
-    expect(Dynamodb::VERSION).to eq "0.3.0"
+    expect(Dynamodb::VERSION).to eq "0.5.2"
   end
 
   describe ".configure" do

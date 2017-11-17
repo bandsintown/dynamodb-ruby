@@ -71,7 +71,7 @@ module Dynamodb
 
     # Converts a hash item result from dynamodb to object
     def item_to_object(_item)
-      self.new(_item)
+      self.new(_item, false) # new_record false for existing records
     end
   end
 end
