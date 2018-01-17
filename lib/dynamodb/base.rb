@@ -59,7 +59,7 @@ module Dynamodb
     end
 
     def generate_timestamps
-      self&.schedule_time_to_live
+      self.schedule_time_to_live if self.respond_to? :schedule_time_to_live
       @data["updated_at"] = Time.now.utc.iso8601
       @data["created_at"] = Time.now.utc.iso8601 if new_record?
     end
